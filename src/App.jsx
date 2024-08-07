@@ -1,24 +1,16 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import Navbar from './components/NavBar/Navbar'
 import './App.css';
-import Tweetsdash from './Tweetsdash';
-import Banner from './components/Banner';
-import Sample from './components/Sample';
-import MovieSearch from './components/MovieSearch';
-import LLMComponent from './components/LLMComponent';
-import TwitterTweets from './components/TwitterTweets';
-import Dashboard from './components/Dashboard';
-import Recommendation from './components/Recommendation';
-import AllBeauty from './components/AllBeauty';
-import AmazonFashion from './components/AmazonFashion';
-import CellPhones from './components/CellPhones';
-import RecommendationDashboard from './components/RecommendationDashboard';
-import TopProducts from './components/TopProducts';
-import ProductDetails from './components/ProductDetails';
-import Ratingplot from './components/Ratingplot';
-import DomainDropdown from './components/DomainDropdown';
-import RecommendationDashboard1 from './components/RecommendationDashboard1';
+import MovieSearch from './components/Domains/MovieSearch';
+import Dashboard from './components/Twitter/Dashboard';
+import AllBeauty from './components/Domains/AllBeauty';
+import AmazonFashion from './components/Domains/AmazonFashion';
+import CellPhones from './components/Domains/CellPhones';
+import RecommendationDashboard1 from './components/Recommendations/RecommendationDashboard1';
+import Mainsidebar from './components/NavBar/Mainsidebar';
+import Books from './components/Domains/Books';
+import Personalize from './components/Graphs/Personalize';
 
 function App() {
   const [selectedMovies, setSelectedMovies] = useState([]);
@@ -28,56 +20,78 @@ function App() {
   const [selectedFashion, setSelectedFashion] = useState([]);
   const [selectedPhones, setSelectedPhones] = useState([]);
   const [selectedDomain, setSelectedDomain] = useState('');
-  const [username, setUsername]=useState('');
-
-  const domains = [
-    'Books',
-    'Movies',
-    'Beauty',
-    'Fashion',
-    'Phones',
-    // Add more domains as needed
-  ];
+  const [username, setUsername] = useState('');
 
   const handleDomainSelect = (domain) => {
     setSelectedDomain(domain);
-    // Additional logic to handle domain selection
-    console.log(`Selected domain: ${domain}`);
-  };
-  
-  const handleSelectedBooksChange = (books) => {
-    setSelectedBooks(books);
-  };
-  const handleSelectedItemsChange = (items) => {
-    setSelectedBeauty(items);
-  };
-  const handleSelectedFashionChange = (items) => {
-    setSelectedFashion(items);
-  };
-  const handleSelectedPhonesChange = (phones) => {
-    setSelectedPhones(phones);
   };
 
   return (
     <BrowserRouter>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Banner />} />
-        <Route path="/watchlist" element={<MovieSearch setSelectedMovies={setSelectedMovies} />} />
-        <Route path="/twitter" element={<Dashboard setSelectedTweets={setSelectedTweets} setUsername={setUsername}/>} />
-        <Route path="/allbeauty" element={<AllBeauty onSelectedItemsChange={handleSelectedItemsChange}/>} />
-        <Route path="/fashion" element={<AmazonFashion onSelectedItemsChange={handleSelectedFashionChange}/>} />
-        <Route path="/phones" element={<CellPhones onSelectedItemsChange={handleSelectedPhonesChange}/>} />
-        {/*<Route path="/llm" element={<LLMComponent selectedMovies={selectedMovies} selectedBooks={selectedBooks} tweets={selectedTweets} beauty={selectedBeauty} fashion={selectedFashion} phones={selectedPhones}/>} />*/}
-        {/*<Route path="/llm1" element={<RecommendationDashboard selectedMovies={selectedMovies} selectedBooks={selectedBooks} tweets={selectedTweets} beauty={selectedBeauty} fashion={selectedFashion} phones={selectedPhones} username={username}/>} />*/}
-        <Route path="/llm1" element={<RecommendationDashboard1 selectedMovies={selectedMovies} selectedBooks={selectedBooks} tweets={selectedTweets} beauty={selectedBeauty} fashion={selectedFashion} phones={selectedPhones} username={username}/>} />
-        {/*<Route path="/llm1" element={<ProductDetails/>} />*/}
-        {/*<Route path="/llm1" element={<Ratingplot bookTitle="Five Stars" domain="Books"/>}/>*/}
-        {/*<Route path="/llm1" element={<DomainDropdown domains={domains} onSelect={handleDomainSelect}/>} />*/}
+      <div className="flex flex-col h-screen">
+        <Navbar selectedDomain={selectedDomain} />
 
-      </Routes>
-      <div className="flex flex-row space-x-4 p-4 overflow-x-auto">
-        <Sample onSelectedBooksChange={handleSelectedBooksChange}/>
+        <div className="flex flex-grow">
+          <Mainsidebar selectedDomain={selectedDomain} />
+
+          <div className='flex-grow ml-48 p-4'>
+            <Routes>
+              <Route 
+                path="/watchlist" 
+                element={<MovieSearch setSelectedMovies={setSelectedMovies} />} 
+                onEnter={() => handleDomainSelect('Movies')}
+              />
+              <Route 
+                path="/twitter" 
+                element={<Dashboard setSelectedTweets={setSelectedTweets} setUsername={setUsername}/>} 
+              />
+              <Route 
+                path="/allbeauty" 
+                element={<AllBeauty onSelectedItemsChange={setSelectedBeauty} />} 
+                onEnter={() => handleDomainSelect('Beauty')}
+              />
+              <Route 
+                path="/fashion" 
+                element={<AmazonFashion onSelectedItemsChange={setSelectedFashion} />} 
+                onEnter={() => handleDomainSelect('Fashion')}
+              />
+              <Route 
+                path="/phones" 
+                element={<CellPhones onSelectedItemsChange={setSelectedPhones} />} 
+                onEnter={() => handleDomainSelect('Phones')}
+              />
+
+             <Route 
+                path="/books" 
+                element={<Books onSelectedBooksChange={setSelectedBooks} />} 
+                onEnter={() => handleDomainSelect('Books')}
+              />
+              <Route 
+                path="/personalize" 
+                element={<Personalize 
+                  selectedMovies={selectedMovies} 
+                  selectedBooks={selectedBooks} 
+                  tweets={selectedTweets} 
+                  beauty={selectedBeauty} 
+                  fashion={selectedFashion} 
+                  phones={selectedPhones} 
+                />} 
+              />
+              <Route 
+                path="/llm1" 
+                element={<RecommendationDashboard1 
+                  selectedMovies={selectedMovies} 
+                  selectedBooks={selectedBooks} 
+                  tweets={selectedTweets} 
+                  beauty={selectedBeauty} 
+                  fashion={selectedFashion} 
+                  phones={selectedPhones} 
+                  username={username} 
+                />} 
+              />
+            </Routes>
+          </div>
+        </div>
       </div>
     </BrowserRouter>
   );
